@@ -23,13 +23,10 @@ public class SharedTimestamp {
 			
 			boolean success = map.remove(LOCK_KEY, LOCK_VALUE); // atomic operation
 			if (success) {
-				long ts = System.nanoTime();
 				long oldTs = map.get(TIMESTAMP_KEY);
-				if (oldTs > ts) {
-					System.out.println(" DANGER oldTs " + oldTs + " > ts " + ts);
-				}
-				if (oldTs == ts) {
-					System.out.println("oldTs = ts = " + ts);
+				long ts = System.currentTimeMillis() * 1000; // microseconds
+				if (oldTs >= ts) {
+					ts = oldTs + 1;
 				}
 				map.put(TIMESTAMP_KEY, Long.valueOf(ts));
 				map.put(LOCK_KEY, LOCK_VALUE);
@@ -42,6 +39,7 @@ public class SharedTimestamp {
 	
 	private void init() {
 		File file = new File(Constants.FILE_PATH);
+		// TODO, we probably need to lock the file
 		boolean firstTimeRun = !file.exists();
 		try {
 			map = ChronicleMapBuilder
