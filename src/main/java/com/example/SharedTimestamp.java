@@ -11,10 +11,27 @@ import net.openhft.chronicle.map.ChronicleMapBuilder;
 
 public class SharedTimestamp {
 	
-	private ChronicleMap<Long, Long> map;
-	
-	public SharedTimestamp() {
-		init();
+	private static ChronicleMap<Long, Long> map;
+
+	static {
+		System.out.println("init");
+		File file = new File(Constants.FILE_PATH);
+		// TODO, we probably need to lock the file
+		boolean firstTimeRun = !file.exists();
+		try {
+			map = ChronicleMapBuilder
+			    .of(Long.class, Long.class)
+			    .name(Constants.MAP_NAME)
+			    .entries(2)
+			    .createPersistedTo(file);
+			if (firstTimeRun) {
+				System.out.println("----- insert initial key/value pairs");
+				map.put(Constants.LOCK_KEY, Constants.LOCK_VALUE);
+				map.put(Constants.TIMESTAMP_KEY, Constants.LOCK_VALUE);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public long timestamp() {
@@ -37,21 +54,4 @@ public class SharedTimestamp {
 		}
 	}
 	
-	private void init() {
-		File file = new File(Constants.FILE_PATH);
-		// TODO, we probably need to lock the file
-		boolean firstTimeRun = !file.exists();
-		try {
-			map = ChronicleMapBuilder
-			    .of(Long.class, Long.class)
-			    .name(Constants.MAP_NAME)
-			    .entries(2)
-			    .createPersistedTo(file);
-			if (firstTimeRun) {
-				map.put(Constants.LOCK_KEY, Constants.LOCK_VALUE);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 }

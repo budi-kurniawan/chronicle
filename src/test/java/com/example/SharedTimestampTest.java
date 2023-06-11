@@ -1,12 +1,20 @@
 package com.example;
 
+import org.junit.jupiter.api.Test;
+
 public class SharedTimestampTest {
 	
-	public static void main(String[] args) {
+	@Test
+	public void testSharedTimestamp() {
 		Runnable task = () -> {
 			SharedTimestamp st = new SharedTimestamp();
-			for (int i = 0; i < 20; i++) {
+			for (int i = 0; i < 40; i++) {
 				System.out.println(st.timestamp());
+//				try {
+//					Thread.sleep(200);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
 			}
 		};
 
@@ -26,5 +34,10 @@ public class SharedTimestampTest {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	public static void main(String[] args) {
+		SharedTimestampTest test = new SharedTimestampTest();
+		test.testSharedTimestamp();;
 	}
 }
