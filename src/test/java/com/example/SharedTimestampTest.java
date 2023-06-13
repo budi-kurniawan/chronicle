@@ -9,7 +9,7 @@ public class SharedTimestampTest {
 		Runnable task = () -> {
 			SharedTimestamp st = new SharedTimestamp();
 			for (int i = 0; i < 40; i++) {
-				System.out.println(st.timestamp());
+				System.out.println(" ts=" + st.timestamp());
 //				try {
 //					Thread.sleep(200);
 //				} catch (Exception e) {

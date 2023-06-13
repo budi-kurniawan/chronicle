@@ -14,7 +14,6 @@ public class SharedTimestamp {
 	private static ChronicleMap<Long, Long> map;
 
 	static {
-		System.out.println("init");
 		File file = new File(Constants.FILE_PATH);
 		// TODO, we probably need to lock the file
 		boolean firstTimeRun = !file.exists();
@@ -23,7 +22,7 @@ public class SharedTimestamp {
 			    .of(Long.class, Long.class)
 			    .name(Constants.MAP_NAME)
 			    .entries(2)
-			    .createPersistedTo(file);
+				.createOrRecoverPersistedTo(file);
 			if (firstTimeRun) {
 				System.out.println("----- insert initial key/value pairs");
 				map.put(Constants.LOCK_KEY, Constants.LOCK_VALUE);
@@ -47,7 +46,7 @@ public class SharedTimestamp {
 				}
 				map.put(TIMESTAMP_KEY, Long.valueOf(ts));
 				map.put(LOCK_KEY, LOCK_VALUE);
-				System.out.println("success at i = " + i);
+				System.out.print("success at i = " + i);
 				return ts;
 			}
 			i++;
